@@ -1,0 +1,21 @@
+version: "3.9"
+
+networks:
+  local:
+
+volumes:
+  sdjpa-database:
+
+services:
+  mysql-sdjpa:
+    image: "mysql:8.0"
+    volumes:
+      - sdjpa-database:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - local
+    environment:
+      - MYSQL_ROOT_PASSWORD=pswd
+    expose:
+      - 3306
