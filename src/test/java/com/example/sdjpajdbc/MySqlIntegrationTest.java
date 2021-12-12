@@ -1,5 +1,6 @@
 package com.example.sdjpajdbc;
 
+import com.example.sdjpajdbc.repositories.AuthorRepository;
 import com.example.sdjpajdbc.repositories.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,21 +10,23 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
 
 @DataJpaTest
 @ComponentScan(basePackages = {"person.birch.sdjpaintro.bootstrap"})
-@ActiveProfiles("local")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MySqlIntegrationTest {
 
     @Autowired
     BookRepository bookRepository;
+    @Autowired
+    AuthorRepository authorRepository;
 
     @Test
-    void testJpaTestSpliceTransaction() {
-        var countBefore = bookRepository.count();
-        assertThat(countBefore).isEqualTo(2);
+    void testInitScript() {
+        var totalBooksCount = bookRepository.count();
+        assertThat(totalBooksCount).isEqualTo(5);
+
+        var totalAuthorCount = authorRepository.count();
+        assertThat(totalAuthorCount).isEqualTo(3);
     }
 }
