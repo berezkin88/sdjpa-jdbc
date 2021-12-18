@@ -1,6 +1,8 @@
 package com.example.sdjpajdbc.dao;
 
+import com.example.sdjpajdbc.domain.Author;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,9 +23,19 @@ class AuthorDaoImplTest {
     AuthorDao authorDao;
 
     @Test
-    void testGetAuthor() {
-        var author = authorDao.getById(1l);
+    void testGetAuthorById() {
+        var author = authorDao.getById(1L);
 
         assertThat(author).isNotNull();
+    }
+
+    @Test
+    void authorDao_findByFirstAndLastNames() {
+        var firstName = "Craig";
+        var lastName = "Walls";
+        var author = authorDao.getByFirstAndLastName(firstName, lastName);
+
+        assertThat(author)
+            .isNotNull();
     }
 }
