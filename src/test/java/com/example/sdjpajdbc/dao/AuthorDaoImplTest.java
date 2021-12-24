@@ -61,4 +61,17 @@ class AuthorDaoImplTest {
 
         assertThat(updatedAuthor.getLastName()).isEqualTo("Berezkin");
     }
+
+    @Test
+    void authorDao_deleteAuthorById() {
+        var author = new Author();
+        author.setLastName("B");
+        author.setFirstName("Oleksandr");
+        var savedAuthor = authorDao.saveNewAuthor(author);
+
+        authorDao.deleteAuthorById(savedAuthor.getId());
+
+        var deletedAuthor = authorDao.getById(savedAuthor.getId());
+        assertThat(deletedAuthor).isNull();
+    }
 }
