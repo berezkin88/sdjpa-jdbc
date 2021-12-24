@@ -4,7 +4,8 @@ import com.example.sdjpajdbc.domain.Author;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Component
 public class AuthorDaoImpl implements AuthorDao {
@@ -17,41 +18,22 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author getById(Long id) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement("select * from author where id = ?");
+        try (var connection = dataSource.getConnection();
+             var preparedStatement = connection.prepareStatement("select * from author where id = ?");
+        ) {
             preparedStatement.setLong(1, id);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                var author = new Author();
-                author.setId(id);
-                author.setFirstName(resultSet.getString("first_name"));
-                author.setLastName(resultSet.getString("last_name"));
-
-                return author;
+                return getAuthorFromResultSet(resultSet);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                if (preparedStatement != null) {
-                    preparedStatement.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+            closeResultSet(resultSet);
         }
 
         return null;
@@ -69,26 +51,34 @@ public class AuthorDaoImpl implements AuthorDao {
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                var author = new Author();
-                author.setId(resultSet.getLong("id"));
-                author.setFirstName(resultSet.getString("first_name"));
-                author.setLastName(resultSet.getString("last_name"));
-
-                return author;
+                return getAuthorFromResultSet(resultSet);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+            closeResultSet(resultSet);
         }
 
         return null;
+    }
+
+    private Author getAuthorFromResultSet(ResultSet resultSet) throws SQLException {
+        var author = new Author();
+        author.setId(resultSet.getLong("id"));
+        author.setFirstName(resultSet.getString("first_name"));
+        author.setLastName(resultSet.getString("last_name"));
+
+        return author;
+    }
+
+    private void closeResultSet(ResultSet resultSet) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
