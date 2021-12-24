@@ -48,4 +48,17 @@ class AuthorDaoImplTest {
 
         assertThat(savedAuthor).isNotNull();
     }
+
+    @Test
+    void authorDao_updateAuthor() {
+        var author = new Author();
+        author.setLastName("B");
+        author.setFirstName("Oleksandr");
+        var savedAuthor = authorDao.saveNewAuthor(author);
+
+        savedAuthor.setLastName("Berezkin");
+        var updatedAuthor = authorDao.updateAuthor(savedAuthor);
+
+        assertThat(updatedAuthor.getLastName()).isEqualTo("Berezkin");
+    }
 }
