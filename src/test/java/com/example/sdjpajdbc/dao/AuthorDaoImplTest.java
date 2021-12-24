@@ -38,4 +38,14 @@ class AuthorDaoImplTest {
         assertThat(author)
             .isNotNull();
     }
+
+    @Test
+    void authorDao_saveNewAuthor() {
+        var author = new Author();
+        author.setLastName("Berezkin");
+        author.setFirstName("Oleksandr");
+        var savedAuthor = authorDao.saveNewAuthor(author);
+
+        assertThat(savedAuthor).isNotNull();
+    }
 }
