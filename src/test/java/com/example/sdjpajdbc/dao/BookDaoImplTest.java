@@ -1,7 +1,7 @@
 package com.example.sdjpajdbc.dao;
 
+import com.example.sdjpajdbc.domain.Author;
 import com.example.sdjpajdbc.domain.Book;
-import org.assertj.core.api.recursive.comparison.RecursiveComparisonConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -38,7 +38,10 @@ class BookDaoImplTest {
         book.setIsbn("123456");
         book.setPublisher("Publisher");
         book.setTitle("T");
-        book.setAuthorId(1L);
+
+        var author = new Author();
+        author.setId(3L);
+        book.setAuthor(author);
 
         var savedBook = bookDao.save(book);
 

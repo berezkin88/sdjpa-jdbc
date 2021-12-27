@@ -7,15 +7,16 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 @Repository
 public class BookDaoImpl implements BookDao {
 
     private final DataSource dataSource;
+    private final AuthorDao authorDao;
 
-    public BookDaoImpl(DataSource dataSource) {
+    public BookDaoImpl(DataSource dataSource, AuthorDao authorDao) {
         this.dataSource = dataSource;
+        this.authorDao = authorDao;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class BookDaoImpl implements BookDao {
         book.setTitle(resultSet.getString("title"));
         book.setPublisher(resultSet.getString("publisher"));
         book.setIsbn(resultSet.getString("isbn"));
-        book.setAuthorId(resultSet.getLong("author_id"));
+        book.setAuthor(authorDao.getById(resultSet.getLong("author_id")));
         return book;
     }
 
@@ -85,10 +86,10 @@ public class BookDaoImpl implements BookDao {
         preparedStatement.setString(1, book.getIsbn());
         preparedStatement.setString(2, book.getPublisher());
         preparedStatement.setString(3, book.getTitle());
-        if (book.getAuthorId() == null) {
-            preparedStatement.setNull(4, Types.BIGINT);
+        if (book.getAuthor() != null) {
+            preparedStatement.setLong(4, book.getAuthor().getId());
         } else {
-            preparedStatement.setLong(4, book.getAuthorId());
+            preparedStatement.setNull(4, -5);
         }
     }
 

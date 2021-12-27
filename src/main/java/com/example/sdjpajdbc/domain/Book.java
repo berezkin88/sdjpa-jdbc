@@ -1,9 +1,6 @@
 package com.example.sdjpajdbc.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -16,12 +13,14 @@ public class Book {
     private String title;
     private String isbn;
     private String publisher;
-    private Long authorId;
+
+    @Transient
+    private Author authorId;
 
     public Book() {
     }
 
-    public Book(String title, String isbn, String publisher, Long authorId) {
+    public Book(String title, String isbn, String publisher, Author authorId) {
         this.title = title;
         this.isbn = isbn;
         this.publisher = publisher;
@@ -60,11 +59,11 @@ public class Book {
         this.title = title;
     }
 
-    public Long getAuthorId() {
+    public Author getAuthor() {
         return authorId;
     }
 
-    public void setAuthorId(Long authorId) {
+    public void setAuthor(Author authorId) {
         this.authorId = authorId;
     }
 
